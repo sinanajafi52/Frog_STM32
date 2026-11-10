@@ -1,0 +1,7 @@
+# Build output (recreated on every build)
+Debug/
+Release/
+
+# Local IDE settings (machine-specific)
+.settings/
+*.launch
