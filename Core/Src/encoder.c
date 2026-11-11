@@ -6,6 +6,7 @@
  */
 #include "encoder.h"
 #include "main.h"
+#define D 50
 static volatile int32_t counter=0;
 
 int32_t encoder_get_counter(void)
@@ -20,7 +21,7 @@ uint8_t encoder_button_press(void)
 	static uint32_t lastupdate = 0;
 	uint32_t tick = HAL_GetTick();
 	SW= (HAL_GPIO_ReadPin(SW_GPIO_Port, SW_Pin)==0);
-	if(SW!=lastsw && tick-lastupdate>50)
+	if(SW!=lastsw && tick-lastupdate>D)
 	{
 		lastsw = SW;
 		lastupdate= tick;
