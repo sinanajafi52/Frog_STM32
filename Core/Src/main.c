@@ -26,6 +26,8 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "display.h"
+#include "encoder.h"
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -107,6 +109,12 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  char buf[20];
+	  sprintf(buf,"counter:%ld\r\n",encoder_get_counter());
+	  display_clear();
+	  display_item(5, 15, buf,1);
+	  display_item(5, 35,encoder_get_sw()? "SW:0 PRESSED\r\n" : "SW:1 NOT PRESSED\r\n", 0);
+	  display_send();
   }
   /* USER CODE END 3 */
 }
