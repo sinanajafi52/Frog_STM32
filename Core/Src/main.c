@@ -113,7 +113,7 @@ int main(void)
 	  sprintf(buf,"counter:%ld\r\n",encoder_get_counter());
 	  display_clear();
 	  display_item(5, 15, buf,1);
-	  display_item(5, 35,encoder_get_sw()? "SW:0 PRESSED\r\n" : "SW:1 NOT PRESSED\r\n", 0);
+	  display_item(5, 35,encoder_button_press()? "SW:0 PRESSED\r\n" : "SW:1 NOT PRESSED\r\n", 0);
 	  display_send();
   }
   /* USER CODE END 3 */
