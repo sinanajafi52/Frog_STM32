@@ -34,25 +34,31 @@ void motor_init(void)
 
 void motor_start(void)
 {
-
+	en=1;
 }
+
 void motor_stop(void)
 {
-
+	en=0;
 }
+
 void motor_set_dir(uint8_t new_dir)
 {
-
+	flipping = (new_dir==dir) ? 0:1;
 }
+
 void motor_set_rpm(uint16_t rpm)
 {
-
+	target_rpm = rpm;
+	if(target_rpm > 300) target_rpm = 300;
 }
+
 void motor_update(void)
 {
 	static uint32_t lasttime = 0;
 }
+
 uint8_t motor_is_running(void)
 {
-	return 0;
+	return running;
 }
