@@ -12,7 +12,7 @@ static uint32_t now_rpm;
 static uint16_t target_rpm;
 static uint8_t en;
 static uint8_t dir;
-static uint8_t flipping;
+
 static uint8_t running;
 
 
@@ -44,7 +44,9 @@ void motor_stop(void)
 
 void motor_set_dir(uint8_t new_dir)
 {
-	flipping = (new_dir==dir) ? 0:1;
+	if(en||running) return;
+	dir = new_dir;
+	HAL_GPIO_WritePin(DIR_GPIO_Port,DIR_Pin,dir ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 void motor_set_rpm(uint16_t rpm)
@@ -61,7 +63,7 @@ void motor_update(void)
 	if(tick - lasttime >=5 )
 	{
 		lasttime = tick;
-		wanted= (en==0 || flipping ==1) ? 0: target_rpm;
+		wanted= (en==1 ) ? target_rpm: 0;
 		if(now_rpm> wanted)
 		{
 			if(wanted<10 && now_rpm<10) now_rpm= wanted;
@@ -80,6 +82,30 @@ void motor_update(void)
 			else
 			{
 				now_rpm++;
+			}
+		}
+		if(now_rpm==0)
+		{
+			if(running)
+			{
+				__HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_3,0);
+				HAL_TIM_PWM_Stop(&htim2,TIM_CHANNEL_3);
+				HAL_GPIO_WritePin(EN_GPIO_Port,EN_Pin,GPIO_PIN_SET);
+				running =0;
+			}
+		}
+		else
+		{
+			uint32_t steps = now_rpm *3200/60;
+			__HAL_TIM_SET_AUTORELOAD(&htim2,1000000/steps-1);
+			__HAL_TIM_SET_COMPARE(&htim2,TIM_CHANNEL_3,10);
+			if(running==0)
+			{
+				HAL_GPIO_WritePin(EN_GPIO_Port,EN_Pin,GPIO_PIN_RESET);
+				delay_us(5);
+				__HAL_TIM_SET_COUNTER(&htim2,0);
+				HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_3);
+				running=1;
 			}
 		}
 	}
