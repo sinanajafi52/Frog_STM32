@@ -28,6 +28,8 @@
 #include "display.h"
 #include "encoder.h"
 #include <stdio.h>
+#include "menu.h"
+#include "motor.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -96,11 +98,8 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  display_init();
-  display_clear();
-  display_item(5, 15, "HELLO",1);
-  display_item(5, 35, "MDF", 0);
-  display_send();
+  menu_init();
+  motor_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -110,12 +109,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  char buf[20];
-	  sprintf(buf,"counter:%ld\r\n",encoder_get_counter());
-	  display_clear();
-	  display_item(5, 15, buf,1);
-	  display_item(5, 35,encoder_button_press()? "SW:0 PRESSED\r\n" : "SW:1 NOT PRESSED\r\n", 0);
-	  display_send();
+	  menu_update();
+	  motor_update();
   }
   /* USER CODE END 3 */
 }
