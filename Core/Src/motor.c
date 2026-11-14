@@ -8,11 +8,13 @@
 #include "main.h"
 #include "tim.h"
 
+#define MAX_RPM 300
+#define RPM_LIMIT 10
+
 static uint32_t now_rpm;
 static uint16_t target_rpm;
 static uint8_t en;
 static uint8_t dir;
-
 static uint8_t running;
 
 
@@ -52,7 +54,7 @@ void motor_set_dir(uint8_t new_dir)
 void motor_set_rpm(uint16_t rpm)
 {
 	target_rpm = rpm;
-	if(target_rpm > 300) target_rpm = 300;
+	if(target_rpm > MAX_RPM) target_rpm = MAX_RPM;
 }
 
 void motor_update(void)
@@ -66,7 +68,7 @@ void motor_update(void)
 		wanted= (en==1 ) ? target_rpm: 0;
 		if(now_rpm> wanted)
 		{
-			if(wanted<10 && now_rpm<10) now_rpm= wanted;
+			if(wanted<RPM_LIMIT && now_rpm<RPM_LIMIT) now_rpm= wanted;
 			else
 			{
 				now_rpm--;
@@ -74,10 +76,10 @@ void motor_update(void)
 		}
 		else if(now_rpm<wanted)
 		{
-			if(wanted<10 && now_rpm<10) now_rpm= wanted;
-			else if(now_rpm<10 && wanted >=10)
+			if(wanted<RPM_LIMIT && now_rpm<RPM_LIMIT) now_rpm= wanted;
+			else if(now_rpm<RPM_LIMIT && wanted >=RPM_LIMIT)
 			{
-				now_rpm=10;
+				now_rpm=RPM_LIMIT;
 			}
 			else
 			{
