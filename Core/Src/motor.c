@@ -56,6 +56,33 @@ void motor_set_rpm(uint16_t rpm)
 void motor_update(void)
 {
 	static uint32_t lasttime = 0;
+	uint32_t tick = HAL_GetTick();
+	uint16_t wanted;
+	if(tick - lasttime >=5 )
+	{
+		lasttime = tick;
+		wanted= (en==0 || flipping ==1) ? 0: target_rpm;
+		if(now_rpm> wanted)
+		{
+			if(wanted<10 && now_rpm<10) now_rpm= wanted;
+			else
+			{
+				now_rpm--;
+			}
+		}
+		else if(now_rpm<wanted)
+		{
+			if(wanted<10 && now_rpm<10) now_rpm= wanted;
+			else if(now_rpm<10 && wanted >=10)
+			{
+				now_rpm=10;
+			}
+			else
+			{
+				now_rpm++;
+			}
+		}
+	}
 }
 
 uint8_t motor_is_running(void)
