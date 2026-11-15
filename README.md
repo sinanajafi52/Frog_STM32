@@ -25,16 +25,16 @@ speed on the OLED. A new DRV8825 is on the way.
 
 ## Pins
 
-| What           | Pin        | Notes                 |
-|----------------|------------|-----------------------|
-| OLED SCL / SDA | PB6 / PB7  | I2C1                  |
-| Encoder CLK    | PA1        | interrupt, pull-up    |
-| Encoder DT     | PA4        | input, pull-up        |
-| Encoder button | PA5        | input, pull-up        |
-| STEP           | PA2        | TIM2 channel 3 (PWM)  |
-| DIR            | PB12       | output                |
-| EN             | PB13       | output, low = enabled |
-| UART (debug)   | PA9 / PA10 | USART1                |
+| What           | Pin        | Notes                          |
+|----------------|------------|--------------------------------|
+| OLED SCL / SDA | PB6 / PB7  | I2C1, 100 kHz                  |
+| Encoder CLK    | PA1        | interrupt on rising edge, pull-up |
+| Encoder DT     | PA4        | input, pull-up                 |
+| Encoder button | PA5        | input, pull-up, low = pressed  |
+| STEP           | PB0        | TIM2 channel 3 (PWM)           |
+| DIR            | PB12       | output, low = clockwise        |
+| EN             | PB13       | output, low = enabled          |
+| UART (debug)   | PA9 / PA10 | USART1, 115200 baud            |
 
 ## How the code is split
 
