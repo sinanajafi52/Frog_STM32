@@ -10,8 +10,8 @@ The stepper is driven by a timer PWM, so the main loop never has to wait.
 ## The device
 
 <p align="center">
-  <img src="docs/images/frog_running.png" width="45%" alt="Pump running">
-  <img src="docs/images/frog_menu.png" width="45%" alt="Pump main menu">
+  <img src="docs/frog_running.png" width="45%" alt="Pump running">
+  <img src="docs/frog_menu.png" width="45%" alt="Pump main menu">
 </p>
 
 *The finished ESP32 version: same mechanics and 3D-printed housing (designed in
