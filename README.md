@@ -7,6 +7,17 @@ with the HAL, mainly to learn how to structure firmware properly.
 You turn the encoder to move through a small OLED menu and press it to select.
 The stepper is driven by a timer PWM, so the main loop never has to wait.
 
+## The device
+
+<p align="center">
+  <img src="docs/frog_running.png" width="45%" alt="Pump running">
+  <img src="docs/frog_menu.png" width="45%" alt="Pump main menu">
+</p>
+
+*The finished ESP32 version: same mechanics and 3D-printed housing (designed in
+Fusion 360 / SolidWorks). The STM32 port uses a 128x64 OLED instead of the
+colour TFT shown here.*
+
 ## Where it stands
 
 Done so far: display, encoder, motor and the main menu with an info page.
