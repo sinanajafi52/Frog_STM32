@@ -9,6 +9,7 @@
 #include "display.h"
 #include <stdint.h>
 #include "main.h"
+#include "status.h"
 
 typedef enum {SCR_MAIN,SCR_STATUS,SCR_DISPENSER,SCR_INFO} screen_t;
 static screen_t screen = SCR_MAIN;
@@ -44,7 +45,11 @@ void menu_update(void)
 			uint8_t page = wrap(count,3);
 			if(click)
 			{
-				if(page==0) screen = SCR_STATUS;
+				if(page==0)
+				{
+					screen = SCR_STATUS;
+					status_enter();
+				}
 				if(page==1) screen = SCR_DISPENSER;
 				if(page==2) screen = SCR_INFO;
 				encoder_set_counter(0);
@@ -63,6 +68,16 @@ void menu_update(void)
 			break;
 		}
 		case SCR_STATUS:
+		{
+			if(status_update())
+			{
+				screen= SCR_MAIN;
+				encoder_set_counter(0);
+				redraw=1;
+			}
+
+			break;
+		}
 		case SCR_DISPENSER:
 		{
 			if(click)
