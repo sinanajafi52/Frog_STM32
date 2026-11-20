@@ -69,7 +69,7 @@ void menu_update(void)
 		}
 		case SCR_STATUS:
 		{
-			if(status_update())
+			if(status_update(click))
 			{
 				screen= SCR_MAIN;
 				encoder_set_counter(0);
