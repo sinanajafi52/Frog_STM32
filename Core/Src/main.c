@@ -106,10 +106,11 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM3_Init();
   MX_IWDG_Init();
+  MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
 
   __HAL_DBGMCU_FREEZE_IWDG();
-  reset_reason_get();
+  reset_reason_init();
   printf("\r\n RESET REASON:%s\r\n",reset_reason_get());
   menu_init();
   motor_init();
