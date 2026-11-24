@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "i2c.h"
+#include "iwdg.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -61,7 +62,11 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+int __io_putchar(int ch)
+{
+	HAL_UART_Transmit(&huart1,(uint8_t*)&ch,1,10);
+	return ch;
+}
 /* USER CODE END 0 */
 
 /**
@@ -97,7 +102,19 @@ int main(void)
   MX_TIM2_Init();
   MX_USART1_UART_Init();
   MX_TIM3_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
+
+  __HAL_DBGMCU_FREEZE_IWDG();
+  const char *reset_reason;
+
+  if(__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST)){reset_reason = "WHATCHDOG"; }
+  else if(__HAL_RCC_GET_FLAG(RCC_FLAG_SFTRST)){reset_reason= "SOFTWARE";}
+  else if(__HAL_RCC_GET_FLAG(RCC_FLAG_PORRST)){reset_reason="POWER";}
+  else if(__HAL_RCC_GET_FLAG(RCC_FLAG_PINRST)){reset_reason="BUTTON";}
+  else{reset_reason="UNKNOWN";}
+  printf("\r\n RESET REASON:%s\r\n",reset_reason);
+  __HAL_RCC_CLEAR_RESET_FLAGS();
   menu_init();
   motor_init();
   /* USER CODE END 2 */
@@ -111,6 +128,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  menu_update();
 	  motor_update();
+	  HAL_IWDG_Refresh(&hiwdg);
   }
   /* USER CODE END 3 */
 }
@@ -127,10 +145,11 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
