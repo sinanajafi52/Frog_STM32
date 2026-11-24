@@ -32,6 +32,7 @@
 #include <stdio.h>
 #include "menu.h"
 #include "motor.h"
+#include "chip_temp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,7 +53,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+static uint32_t last_temp_print=0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -119,6 +120,7 @@ int main(void)
   __HAL_RCC_CLEAR_RESET_FLAGS();
   menu_init();
   motor_init();
+  chip_temp_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -130,7 +132,14 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  menu_update();
 	  motor_update();
+	  chip_temp_update();
 	  HAL_IWDG_Refresh(&hiwdg);
+	  if(HAL_GetTick()-last_temp_print>1000)
+	  {
+		  last_temp_print=HAL_GetTick();
+		  int32_t t = chip_temp_get_t10();
+		  printf("VDDA: %lu mv, Chip: %ld.%ld C\r\n",chip_temp_get_vdda(),t/10,t%10);
+	  }
   }
   /* USER CODE END 3 */
 }
