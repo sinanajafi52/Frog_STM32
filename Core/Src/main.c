@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include "menu.h"
 #include "motor.h"
+#include "reset_reason.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -106,15 +107,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   __HAL_DBGMCU_FREEZE_IWDG();
-  const char *reset_reason;
-
-  if(__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST)){reset_reason = "WHATCHDOG"; }
-  else if(__HAL_RCC_GET_FLAG(RCC_FLAG_SFTRST)){reset_reason= "SOFTWARE";}
-  else if(__HAL_RCC_GET_FLAG(RCC_FLAG_PORRST)){reset_reason="POWER";}
-  else if(__HAL_RCC_GET_FLAG(RCC_FLAG_PINRST)){reset_reason="BUTTON";}
-  else{reset_reason="UNKNOWN";}
-  printf("\r\n RESET REASON:%s\r\n",reset_reason);
-  __HAL_RCC_CLEAR_RESET_FLAGS();
+  reset_reason_get();
+  printf("\r\n RESET REASON:%s\r\n",reset_reason_get());
   menu_init();
   motor_init();
   /* USER CODE END 2 */
