@@ -20,8 +20,12 @@ colour TFT shown here.*
 
 ## Where it stands
 
-Done so far: display, encoder, motor and the main menu with an info page.
-Still missing: the Status and Dispenser screens.
+All screens are done: the main menu, Status, Dispenser and the info page.
+
+- **Status**: set the speed (0–300 RPM) and the direction (CW/CCW), then start
+  and stop the motor.
+- **Dispenser**: set the speed, an ON time and an OFF time (1–10 s each). After
+  START the motor runs in a repeating ON/OFF cycle until you press STOP.
 
 My stepper driver died (I hadn't set the current limit), so the motor code
 hasn't run on a real motor yet. I checked the ramp logic by printing the
@@ -57,7 +61,13 @@ and only offers a few functions in its header.
   one click per press (edge detection plus a 50 ms debounce)
 - `motor`: holds the target speed, ramps up and down, switches the driver on and off
 - `menu`: decides which screen is shown and handles the main menu and info page
+- `status`: the Status screen (RPM, direction, start/stop)
+- `dispenser`: the Dispenser screen (RPM, ON/OFF time, the ON/OFF cycle)
 - `main.c`: just calls `menu_update()` and `motor_update()` in the loop
+
+Each screen has the same two functions: `x_enter()` is called once when the
+menu opens it, and `x_update(click)` is called every loop and returns 1 when
+BACK is pressed.
 
 ## A few things I paid attention to
 
@@ -67,7 +77,14 @@ and only offers a few functions in its header.
 - Pressing STOP doesn't cut the motor. It slows down first, and only then
   the PWM and the driver are turned off.
 - Speed and direction can only be changed while the motor is stopped.
-- The OLED is only redrawn when something changed.
+- Every screen is a small state machine (selecting, editing a value, running),
+  and each state change sets up what the new state needs right there.
+- The menu reads the button click once and passes it to the active screen.
+  A click is used up when it's read, so reading it twice would lose it.
+- The Dispenser cycle doesn't block either: it compares `HAL_GetTick()` with the
+  moment the current phase started. ON and OFF times are at least 1 s, so the
+  motor can never be switched on and off on every loop.
+- The OLED is only redrawn when something on the screen changed.
 - Every feature went through its own branch and pull request before merging.
 
 ## Building
@@ -78,7 +95,7 @@ sits in `Drivers/u8g2`.
 
 ## Next
 
-- Status screen (set RPM and direction, start/stop)
-- Dispenser screen (RPM, on time, off time)
 - Test the motor once the new driver arrives
+- Code cleanup (naming, braces, constants)
 - Save the settings to flash
+- Port the main loop to FreeRTOS
