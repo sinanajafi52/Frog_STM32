@@ -109,7 +109,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   __HAL_DBGMCU_FREEZE_IWDG();
-  reset_reason_get();
+  reset_reason_init();
   printf("\r\n RESET REASON:%s\r\n",reset_reason_get());
   menu_init();
   motor_init();
